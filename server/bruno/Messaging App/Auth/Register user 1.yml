@@ -1,0 +1,24 @@
+info:
+  name: Register user
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{API_URL}}/api/auth/register"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "carlos@gmail.com",
+        "username": "carlosaac23",
+        "password": "password"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
