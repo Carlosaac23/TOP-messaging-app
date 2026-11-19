@@ -1,9 +1,10 @@
-import { Router } from "express";
-import { rateLimit } from "express-rate-limit";
-import bcrypt from "bcryptjs";
-import { z } from "zod";
-import { prisma } from "../db.js";
-import { authenticate } from "../middleware/authenticate.js";
+import bcrypt from 'bcryptjs';
+import { Router } from 'express';
+import { rateLimit } from 'express-rate-limit';
+import { z } from 'zod';
+
+import { prisma } from '../db.js';
+import { authenticate } from '../middleware/authenticate.js';
 
 export const authRouter = Router();
 
@@ -13,7 +14,7 @@ const credentialsSchema = z.object({
     .trim()
     .email()
     .max(254)
-    .transform((value) => value.toLowerCase()),
+    .transform(value => value.toLowerCase()),
   password: z.string().min(8).max(72),
 });
 
@@ -24,30 +25,30 @@ const registrationSchema = credentialsSchema.extend({
     .min(3)
     .max(24)
     .regex(/^[a-zA-Z0-9_]+$/)
-    .transform((value) => value.toLowerCase()),
+    .transform(value => value.toLowerCase()),
   displayName: z.string().trim().min(1).max(50).optional(),
 });
 
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 10,
-  standardHeaders: "draft-8",
+  standardHeaders: 'draft-8',
   legacyHeaders: false,
 });
 
-authRouter.post("/register", loginLimiter, async (req, res) => {
+authRouter.post('/register', loginLimiter, async (req, res) => {
   const parsed = registrationSchema.safeParse(req.body);
   if (!parsed.success) {
     res
       .status(400)
-      .json({ error: "Datos de registro inválidos.", details: parsed.error.flatten().fieldErrors });
+      .json({ error: 'Datos de registro inválidos.', details: parsed.error.flatten().fieldErrors });
     return;
   }
 
   const { email, username, password, displayName } = parsed.data;
   const existingUser = await prisma.user.findFirst({ where: { OR: [{ email }, { username }] } });
   if (existingUser) {
-    res.status(409).json({ error: "El correo o nombre de usuario ya está registrado." });
+    res.status(409).json({ error: 'El correo o nombre de usuario ya está registrado.' });
     return;
   }
 
@@ -68,34 +69,34 @@ authRouter.post("/register", loginLimiter, async (req, res) => {
     },
   });
 
-  req.session.regenerate((error) => {
-    if (error) return res.status(500).json({ error: "No se pudo iniciar la sesión." });
+  req.session.regenerate(error => {
+    if (error) return res.status(500).json({ error: 'No se pudo iniciar la sesión.' });
     req.session.userId = user.id;
-    req.session.save((saveError) => {
-      if (saveError) return res.status(500).json({ error: "No se pudo guardar la sesión." });
+    req.session.save(saveError => {
+      if (saveError) return res.status(500).json({ error: 'No se pudo guardar la sesión.' });
       res.status(201).json({ user });
     });
   });
 });
 
-authRouter.post("/login", loginLimiter, async (req, res) => {
+authRouter.post('/login', loginLimiter, async (req, res) => {
   const parsed = credentialsSchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: "Correo o contraseña inválidos." });
+    res.status(400).json({ error: 'Correo o contraseña inválidos.' });
     return;
   }
 
   const user = await prisma.user.findUnique({ where: { email: parsed.data.email } });
   if (!user || !(await bcrypt.compare(parsed.data.password, user.passwordHash))) {
-    res.status(401).json({ error: "Correo o contraseña incorrectos." });
+    res.status(401).json({ error: 'Correo o contraseña incorrectos.' });
     return;
   }
 
-  req.session.regenerate((error) => {
-    if (error) return res.status(500).json({ error: "No se pudo iniciar la sesión." });
+  req.session.regenerate(error => {
+    if (error) return res.status(500).json({ error: 'No se pudo iniciar la sesión.' });
     req.session.userId = user.id;
-    req.session.save((saveError) => {
-      if (saveError) return res.status(500).json({ error: "No se pudo guardar la sesión." });
+    req.session.save(saveError => {
+      if (saveError) return res.status(500).json({ error: 'No se pudo guardar la sesión.' });
       res.json({
         user: {
           id: user.id,
@@ -110,15 +111,15 @@ authRouter.post("/login", loginLimiter, async (req, res) => {
   });
 });
 
-authRouter.post("/logout", authenticate, (req, res, next) => {
-  req.session.destroy((error) => {
+authRouter.post('/logout', authenticate, (req, res, next) => {
+  req.session.destroy(error => {
     if (error) return next(error);
-    res.clearCookie("messaging.sid");
+    res.clearCookie('messaging.sid');
     res.status(204).end();
   });
 });
 
-authRouter.get("/me", authenticate, async (req, res) => {
+authRouter.get('/me', authenticate, async (req, res) => {
   const user = await prisma.user.findUnique({
     where: { id: req.session.userId },
     select: {
@@ -132,14 +133,14 @@ authRouter.get("/me", authenticate, async (req, res) => {
   });
 
   if (!user) {
-    res.status(401).json({ error: "La sesión ya no corresponde a un usuario válido." });
+    res.status(401).json({ error: 'La sesión ya no corresponde a un usuario válido.' });
     return;
   }
 
   res.json({ user });
 });
 
-authRouter.patch("/me", authenticate, async (req, res) => {
+authRouter.patch('/me', authenticate, async (req, res) => {
   const parsed = z
     .object({
       displayName: z.string().trim().min(1).max(50).optional(),
@@ -147,7 +148,7 @@ authRouter.patch("/me", authenticate, async (req, res) => {
     })
     .safeParse(req.body);
   if (!parsed.success || Object.keys(parsed.data ?? {}).length === 0) {
-    res.status(400).json({ error: "Indica un nombre o una biografía válidos." });
+    res.status(400).json({ error: 'Indica un nombre o una biografía válidos.' });
     return;
   }
 
