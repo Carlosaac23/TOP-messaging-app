@@ -3,9 +3,9 @@
   "name": "messaging-app-client",
   "compatibility_date": "2026-11-13",
   "observability": {
-    "enabled": true
+    "enabled": true,
   },
   "assets": {
-    "not_found_handling": "single-page-application"
-  }
+    "not_found_handling": "single-page-application",
+  },
 }
