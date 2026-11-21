@@ -10,7 +10,7 @@ usersRouter.use(authenticate);
 usersRouter.get('/', async (req, res) => {
   const parsed = z.string().trim().max(50).optional().safeParse(req.query.search);
   if (!parsed.success) {
-    res.status(400).json({ error: 'La búsqueda no puede superar 50 caracteres.' });
+    res.status(400).json({ error: 'Search must not exceed 50 characters.' });
     return;
   }
   const search = parsed.data;

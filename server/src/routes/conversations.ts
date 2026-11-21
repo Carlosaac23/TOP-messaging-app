@@ -25,7 +25,7 @@ conversationsRouter.get('/', async (req, res) => {
 conversationsRouter.post('/', async (req, res) => {
   const parsed = z.object({ userId: z.string().min(1) }).safeParse(req.body);
   if (!parsed.success || parsed.data.userId === req.session.userId) {
-    res.status(400).json({ error: 'Selecciona a otro usuario para iniciar una conversación.' });
+    res.status(400).json({ error: 'Select another user to start a conversation.' });
     return;
   }
 
@@ -34,7 +34,7 @@ conversationsRouter.post('/', async (req, res) => {
     select: { id: true },
   });
   if (!otherUser) {
-    res.status(404).json({ error: 'No se encontró el usuario.' });
+    res.status(404).json({ error: 'User not found.' });
     return;
   }
 
@@ -69,7 +69,7 @@ conversationsRouter.post('/', async (req, res) => {
 conversationsRouter.get('/:conversationId/messages', async (req, res) => {
   const conversationId = z.string().min(1).safeParse(req.params.conversationId);
   if (!conversationId.success) {
-    res.status(400).json({ error: 'Identificador de conversación inválido.' });
+    res.status(400).json({ error: 'Invalid conversation ID.' });
     return;
   }
 
@@ -79,7 +79,7 @@ conversationsRouter.get('/:conversationId/messages', async (req, res) => {
     },
   });
   if (!membership) {
-    res.status(404).json({ error: 'No se encontró la conversación.' });
+    res.status(404).json({ error: 'Conversation not found.' });
     return;
   }
 
@@ -96,7 +96,7 @@ conversationsRouter.get('/:conversationId/messages', async (req, res) => {
 conversationsRouter.post('/:conversationId/messages', async (req, res) => {
   const parsed = z.object({ body: z.string().trim().min(1).max(4000) }).safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: 'El mensaje debe tener entre 1 y 4000 caracteres.' });
+    res.status(400).json({ error: 'Message must be between 1 and 4000 characters.' });
     return;
   }
 
@@ -109,7 +109,7 @@ conversationsRouter.post('/:conversationId/messages', async (req, res) => {
     },
   });
   if (!membership) {
-    res.status(404).json({ error: 'No se encontró la conversación.' });
+    res.status(404).json({ error: 'Conversation not found.' });
     return;
   }
 

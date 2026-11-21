@@ -39,16 +39,16 @@ app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/conversations', conversationsRouter);
 
-app.use((_req, res) => res.status(404).json({ error: 'Ruta no encontrada.' }));
+app.use((_req, res) => res.status(404).json({ error: 'Route not found.' }));
 
 const errorHandler: ErrorRequestHandler = (error: unknown, _req, res, _next) => {
   console.error(error);
-  res.status(500).json({ error: 'Ocurrió un error interno.' });
+  res.status(500).json({ error: 'An internal error occurred.' });
 };
 app.use(errorHandler);
 
 const server = app.listen(env.PORT, '0.0.0.0', () => {
-  console.log(`API escuchando en el puerto ${env.PORT}`);
+  console.log(`Server working on http://localhost:${env.PORT}`);
 });
 
 const shutdown = () => {

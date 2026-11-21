@@ -39,14 +39,14 @@ authRouter.post('/register', loginLimiter, async (req, res) => {
   if (!parsed.success) {
     res
       .status(400)
-      .json({ error: 'Datos de registro inválidos.', details: parsed.error.flatten().fieldErrors });
+      .json({ error: 'Invalid registration data.', details: parsed.error.flatten().fieldErrors });
     return;
   }
 
   const { email, username, password, displayName } = parsed.data;
   const existingUser = await prisma.user.findFirst({ where: { OR: [{ email }, { username }] } });
   if (existingUser) {
-    res.status(409).json({ error: 'El correo o nombre de usuario ya está registrado.' });
+    res.status(409).json({ error: 'Email or username is already registered.' });
     return;
   }
 
@@ -68,10 +68,10 @@ authRouter.post('/register', loginLimiter, async (req, res) => {
   });
 
   req.session.regenerate(error => {
-    if (error) return res.status(500).json({ error: 'No se pudo iniciar la sesión.' });
+    if (error) return res.status(500).json({ error: 'Could not start the session.' });
     req.session.userId = user.id;
     req.session.save(saveError => {
-      if (saveError) return res.status(500).json({ error: 'No se pudo guardar la sesión.' });
+      if (saveError) return res.status(500).json({ error: 'Could not save the session.' });
       res.status(201).json({ user });
     });
   });
@@ -80,21 +80,21 @@ authRouter.post('/register', loginLimiter, async (req, res) => {
 authRouter.post('/login', loginLimiter, async (req, res) => {
   const parsed = credentialsSchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: 'Correo o contraseña inválidos.' });
+    res.status(400).json({ error: 'Invalid email or password.' });
     return;
   }
 
   const user = await prisma.user.findUnique({ where: { email: parsed.data.email } });
   if (!user || !(await bcrypt.compare(parsed.data.password, user.passwordHash))) {
-    res.status(401).json({ error: 'Correo o contraseña incorrectos.' });
+    res.status(401).json({ error: 'Incorrect email or password.' });
     return;
   }
 
   req.session.regenerate(error => {
-    if (error) return res.status(500).json({ error: 'No se pudo iniciar la sesión.' });
+    if (error) return res.status(500).json({ error: 'Could not start the session.' });
     req.session.userId = user.id;
     req.session.save(saveError => {
-      if (saveError) return res.status(500).json({ error: 'No se pudo guardar la sesión.' });
+      if (saveError) return res.status(500).json({ error: 'Could not save the session.' });
       res.json({
         user: {
           id: user.id,
@@ -131,7 +131,7 @@ authRouter.get('/me', authenticate, async (req, res) => {
   });
 
   if (!user) {
-    res.status(401).json({ error: 'La sesión ya no corresponde a un usuario válido.' });
+    res.status(401).json({ error: 'The session is no longer associated with a valid user.' });
     return;
   }
 
@@ -146,7 +146,7 @@ authRouter.patch('/me', authenticate, async (req, res) => {
     })
     .safeParse(req.body);
   if (!parsed.success || Object.keys(parsed.data ?? {}).length === 0) {
-    res.status(400).json({ error: 'Indica un nombre o una biografía válidos.' });
+    res.status(400).json({ error: 'Provide a valid name or bio.' });
     return;
   }
 
