@@ -10,10 +10,24 @@ http:
     type: json
     data: |-
       {
-        "email": "{{userEmail}}",
+        "email": "carlos@gmail.com",
         "password": "password"
       }
   auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        const body = res.getBody()
+
+        test("logs in and returns the authenticated user", function () {
+          expect(res.getStatus()).to.equal(200)
+          expect(body.user).to.have.property("id")
+          expect(body.user).to.have.property("email", "carlos@gmail.com")
+          bru.setVar("authenticatedUserId", body.user.id)
+          bru.setVar("authenticatedUserEmail", body.user.email)
+        })
 
 settings:
   encodeUrl: true

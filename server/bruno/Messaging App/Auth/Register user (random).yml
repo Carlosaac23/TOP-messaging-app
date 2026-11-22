@@ -20,10 +20,18 @@ runtime:
   scripts:
     - type: after-response
       code: |-
-        if (res.status === 201 && res.body?.user?.email) {
-          const userEmail = res.body.user.email
-          bru.setVar("userEmail", userEmail)
-        }
+        const body = res.getBody()
+
+        test("registers a new user and starts a session", function () {
+          expect(res.getStatus()).to.equal(201)
+          expect(body.user).to.have.property("id")
+          expect(body.user).to.have.property("email")
+          expect(body.user).to.have.property("username")
+          bru.setVar("authenticatedUserId", body.user.id)
+          bru.setVar("authenticatedUserEmail", body.user.email)
+          bru.setVar("userEmail", body.user.email)
+          bru.setVar("userUsername", body.user.username)
+        })
 
 settings:
   encodeUrl: true
