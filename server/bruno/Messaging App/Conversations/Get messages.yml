@@ -1,0 +1,30 @@
+info:
+  name: Get messages
+  type: http
+  seq: 6
+
+http:
+  method: GET
+  url: "{{API_URL}}/api/conversations/{{conversationId}}/messages"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        const body = res.getBody()
+
+        test("returns messages for the conversation in chronological order", function () {
+          expect(res.getStatus()).to.equal(200)
+          expect(body.messages).to.be.an("array").that.is.not.empty
+          expect(body.messages.some(message => message.body === "Bruno conversation API test message")).to.equal(true)
+          const timestamps = body.messages.map(message => Date.parse(message.createdAt))
+          expect(timestamps).to.deep.equal([...timestamps].sort((a, b) => a - b))
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

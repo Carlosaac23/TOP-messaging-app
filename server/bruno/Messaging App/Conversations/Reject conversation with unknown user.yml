@@ -1,0 +1,31 @@
+info:
+  name: Reject conversation with unknown user
+  type: http
+  seq: 8
+
+http:
+  method: POST
+  url: "{{API_URL}}/api/conversations"
+  body:
+    type: json
+    data: |-
+      {
+        "userId": "missing-user-id"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("returns not found when the selected user does not exist", function () {
+          expect(res.getStatus()).to.equal(404)
+          expect(res.getBody()).to.have.property("error")
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

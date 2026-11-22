@@ -1,0 +1,35 @@
+info:
+  name: Send message
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{API_URL}}/api/conversations/{{conversationId}}/messages"
+  body:
+    type: json
+    data: |-
+      {
+        "body": "Bruno conversation API test message"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        const body = res.getBody()
+
+        test("sends a message to the conversation", function () {
+          expect(res.getStatus()).to.equal(201)
+          expect(body.message.body).to.equal("Bruno conversation API test message")
+          expect(body.message).to.have.property("id")
+          expect(body.message.sender).to.have.property("id", bru.getVar("conversationCurrentUserId"))
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
