@@ -13,6 +13,7 @@ usersRouter.get('/', async (req, res) => {
     res.status(400).json({ error: 'Search must not exceed 50 characters.' });
     return;
   }
+
   const search = parsed.data;
   const users = await prisma.user.findMany({
     where: {
