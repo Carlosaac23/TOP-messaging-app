@@ -5,10 +5,10 @@ info:
 
 http:
   method: GET
-  url: "{{API_URL}}/api/users"
+  url: '{{API_URL}}/api/users'
   params:
     - name: search
-      value: "{{otherUsername}}"
+      value: '{{otherUsername}}'
       type: query
   auth: inherit
 

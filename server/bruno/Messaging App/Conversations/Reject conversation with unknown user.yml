@@ -5,7 +5,7 @@ info:
 
 http:
   method: POST
-  url: "{{API_URL}}/api/conversations"
+  url: '{{API_URL}}/api/conversations'
   body:
     type: json
     data: |-
