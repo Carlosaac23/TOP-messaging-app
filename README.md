@@ -1,6 +1,31 @@
 # Messaging App
 
-A full-stack messaging app project with a React and TypeScript client and an Express API. The API supports account registration and login, user lookup, conversations, and session-based authentication. The client provides account, profile, and messaging flows.
+A full-stack messaging application for one-to-one conversations. Create an account, find other people, and keep your conversations in one place.
+
+**[Open the live application](https://messaging-app-client.carlosaac232001.workers.dev/)**
+
+## Preview
+
+![Messaging App home page with a sample conversation preview](docs/images/home.jpg)
+
+![Messaging App sign-in screen](docs/images/sign-in.jpg)
+
+The conversations on the home page are examples; sign in to access your own inbox.
+
+## Features
+
+- Register, sign in, and maintain a cookie-based session.
+- Search for people and start or continue a one-to-one conversation.
+- Send text messages and check for new messages automatically while the app is open.
+- Edit your display name and bio.
+- Use the app on desktop and mobile screens.
+
+## Built With
+
+- **Frontend:** React, TypeScript, Vite, Zustand, React Router, Tailwind CSS, shadcn/ui, and Base UI.
+- **Backend:** Node.js, Express, TypeScript, Zod, and express-session.
+- **Database:** PostgreSQL and Prisma.
+- **Deployment:** Cloudflare Workers for the client and Render for the API.
 
 ## Project Structure
 
