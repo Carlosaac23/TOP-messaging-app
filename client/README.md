@@ -30,3 +30,7 @@ If you are developing a production application, we recommend enabling type-aware
 ```
 
 See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+
+### Client configuration
+
+The Vite development server runs at `http://localhost:3000` and proxies `/api` to `http://localhost:4000`. For a separately hosted API, copy `client/.env.example` to `client/.env` and set `VITE_API_URL` to the API origin before building. The client sends session cookies with requests. In production, host the frontend and API on subdomains of the same root domain and set the server's `CLIENT_ORIGIN` to the exact frontend origin; the session cookie uses `SameSite=Lax`.

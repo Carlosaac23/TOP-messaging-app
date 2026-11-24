@@ -1,6 +1,6 @@
 # Messaging App
 
-A full-stack messaging app project with a React and TypeScript client and an Express API. The API supports account registration and login, user lookup, conversations, and session-based authentication. The client is currently the Vite starter screen and is the place to build the messaging interface.
+A full-stack messaging app project with a React and TypeScript client and an Express API. The API supports account registration and login, user lookup, conversations, and session-based authentication. The client provides account, profile, and messaging flows.
 
 ## Project Structure
 
@@ -39,7 +39,7 @@ pnpm install
 pnpm dev
 ```
 
-The API defaults to `http://localhost:4000` and the Vite client to `http://localhost:5173`. Set `CLIENT_ORIGIN` in `server/.env` to the client origin if it differs from the default.
+The API defaults to `http://localhost:4000` and the Vite client to `http://localhost:3000`. Set `CLIENT_ORIGIN` in `server/.env` to the client origin if it differs from the default.
 
 ## Useful Commands
 
