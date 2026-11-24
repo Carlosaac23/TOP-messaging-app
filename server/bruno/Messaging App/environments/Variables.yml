@@ -2,3 +2,5 @@ name: Variables
 variables:
   - name: API_URL
     value: http://localhost:4000
+  - name: otherUsername
+    value: bonita_rodriguez

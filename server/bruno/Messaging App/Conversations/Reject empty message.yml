@@ -1,0 +1,31 @@
+info:
+  name: Reject empty message
+  type: http
+  seq: 9
+
+http:
+  method: POST
+  url: "{{API_URL}}/api/conversations/{{conversationId}}/messages"
+  body:
+    type: json
+    data: |-
+      {
+        "body": "   "
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        test("rejects a message without content", function () {
+          expect(res.getStatus()).to.equal(400)
+          expect(res.getBody()).to.have.property("error")
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

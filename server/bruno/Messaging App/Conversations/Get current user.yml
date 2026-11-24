@@ -1,0 +1,28 @@
+info:
+  name: Get current user
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{API_URL}}/api/auth/me"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        const body = res.getBody()
+
+        test("returns the authenticated user for the conversation tests", function () {
+          expect(res.getStatus()).to.equal(200)
+          expect(body.user).to.have.property("id")
+          bru.setVar("conversationCurrentUserId", body.user.id)
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

@@ -5,8 +5,22 @@ info:
 
 http:
   method: GET
-  url: "{{API_URL}}/api/auth/me"
+  url: '{{API_URL}}/api/auth/me'
   auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        const body = res.getBody()
+
+        test("returns the current user's profile", function () {
+          expect(res.getStatus()).to.equal(200)
+          expect(body.user).to.have.property("id")
+          expect(body.user).to.have.property("email")
+          bru.setVar("authenticatedUserId", body.user.id)
+          bru.setVar("authenticatedUserEmail", body.user.email)
+        })
 
 settings:
   encodeUrl: true
