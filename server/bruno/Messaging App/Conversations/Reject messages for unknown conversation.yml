@@ -5,7 +5,7 @@ info:
 
 http:
   method: GET
-  url: "{{API_URL}}/api/conversations/missing-conversation-id/messages"
+  url: '{{API_URL}}/api/conversations/missing-conversation-id/messages'
   auth: inherit
 
 runtime:

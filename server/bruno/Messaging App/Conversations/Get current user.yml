@@ -5,7 +5,7 @@ info:
 
 http:
   method: GET
-  url: "{{API_URL}}/api/auth/me"
+  url: '{{API_URL}}/api/auth/me'
   auth: inherit
 
 runtime:
